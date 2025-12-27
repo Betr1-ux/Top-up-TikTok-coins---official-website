@@ -1,226 +1,180 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Coin Recharge</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coins Demo</title>
 
 <style>
-body{
-    background:#0f172a;
-    font-family:Tahoma, Arial;
-    color:#fff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+body {
+  margin:0; background:#121212; color:#fff;
+  font-family: Arial, sans-serif;
+}
+.app { max-width:430px; margin:auto; }
+.top {
+  background:#000; padding:14px;
+  text-align:center; font-weight:bold;
+}
+.box {
+  background:#1c1c1c; margin:15px;
+  padding:16px; border-radius:14px;
+}
+input {
+  width:100%; padding:10px;
+  border:none; border-radius:8px;
+  font-size:16px;
+}
+.amount {
+  font-size:26px; font-weight:bold;
+}
+.pack {
+  background:#1c1c1c; margin:10px 15px;
+  padding:14px; border-radius:14px;
+  display:flex; justify-content:space-between;
+  align-items:center;
+}
+button {
+  background:#fe2c55; border:none;
+  color:#fff; padding:8px 18px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-.container{
-    width:360px;
-    background:#020617;
-    border-radius:16px;
-    padding:20px;
-    box-shadow:0 0 25px rgba(0,0,0,.7);
+/* زر الدفع */
+.pay-btn{
+  background:#fe2c55;
+  color:#fff;
+  text-align:center;
+  padding:12px;
+  border-radius:6px;
+  margin-top:12px;
+  cursor:pointer;
+  font-weight:bold;
 }
 
-.balance{
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    border-radius:14px;
-    padding:14px;
-    text-align:center;
-    margin-bottom:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,.4);
+.hidden { display:none; }
+.center { text-align:center; }
+
+/* loader */
+.loader {
+  width:100%; height:8px;
+  background:#333; border-radius:10px;
+  overflow:hidden; margin-top:15px;
 }
-
-.balance span{
-    font-size:13px;
-    opacity:.9;
+.bar {
+  height:100%; width:0%;
+  background:#fe2c55;
+  animation:load 3s linear forwards;
 }
+@keyframes load { to { width:100%; } }
 
-.balance h3{
-    margin:5px 0 0;
-    font-size:24px;
+.check {
+  font-size:40px; color:#00ff88;
+  margin-top:15px;
 }
-
-h2{
-    text-align:center;
-    margin-bottom:15px;
+.success-text{
+  margin-top:8px;
+  color:#00ff88;
+  font-weight:bold;
 }
-
-label{
-    font-size:13px;
-    color:#94a3b8;
-}
-
-input{
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    outline:none;
-    margin:8px 0 12px;
-    font-size:15px;
-}
-
-.coins{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:15px;
-    margin-bottom:15px;
-}
-
-.coin{
-    height:110px;
-    border-radius:50%;
-    background:
-      radial-gradient(circle at top left, #fde68a, #f59e0b 60%, #b45309);
-    box-shadow:
-      inset -6px -6px 10px rgba(0,0,0,.3),
-      inset 6px 6px 10px rgba(255,255,255,.3),
-      0 10px 20px rgba(0,0,0,.6);
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    transition:.2s;
-    position:relative;
-}
-
-.coin::after{
-    content:"";
-    position:absolute;
-    top:10px;
-    left:15px;
-    width:40%;
-    height:40%;
-    background:rgba(255,255,255,.25);
-    border-radius:50%;
-}
-
-.coin span{
-    font-size:22px;
-    font-weight:bold;
-    color:#111;
-}
-
-.coin small{
-    font-size:12px;
-    color:#1f2937;
-}
-
-.coin:hover{transform:scale(1.05);}
-.coin:active{transform:scale(0.95);}
-
-button{
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    background:#22c55e;
-    color:#000;
-    font-size:16px;
-    cursor:pointer;
-}
-
-.loading, .success{
-    display:none;
-    text-align:center;
-    padding:30px 0;
-}
-
-.loader{
-    width:45px;
-    height:45px;
-    border:5px solid #334155;
-    border-top:5px solid #22c55e;
-    border-radius:50%;
-    margin:0 auto 15px;
-    animation:spin 1s linear infinite;
-}
-
-@keyframes spin{100%{transform:rotate(360deg);}}
-
-.success{font-size:22px;color:#22c55e;}
 </style>
 </head>
 
 <body>
 
-<div class="container" id="formBox">
+<div class="app">
 
-    <!-- BALANCE -->
-    <div class="balance">
-        <span>Available Balance</span>
-        <h3><span id="balance">25000</span> Coins</h3>
-    </div>
+<div class="top">Account Balance: <span id="account">100000</span></div>
 
-    <h2>Coin Recharge</h2>
+<!-- الصفحة الرئيسية -->
+<div id="page1">
 
-    <label>Username (English only)</label>
-    <input type="text" id="user" placeholder="Enter username">
+  <div class="box">
+    <div>Username</div>
+    <input id="user" placeholder="@username">
+  </div>
 
-    <label>Amount</label>
-    <input type="number" id="amount" placeholder="Enter amount">
+  <div class="box">
+    <div>Coins to edit</div>
+    <input id="manual" type="number" placeholder="Enter amount" oninput="setManual(this.value)">
+    <div class="amount" id="amount">0</div>
 
-    <div class="coins">
-        <div class="coin" onclick="setAmount(2000)"><span>2000</span><small>COINS</small></div>
-        <div class="coin" onclick="setAmount(5000)"><span>5000</span><small>COINS</small></div>
-        <div class="coin" onclick="setAmount(7000)"><span>7000</span><small>COINS</small></div>
-        <div class="coin" onclick="setAmount(10000)"><span>10000</span><small>COINS</small></div>
-    </div>
+    <!-- زر Pay aest -->
+    <div class="pay-btn" onclick="askEdit()">Pay aest</div>
+  </div>
 
-    <button onclick="startProcess()">Confirm</button>
+  <!-- الباكدجات -->
+  <div class="pack"><div>+500</div><button onclick="add(500)">Add</button></div>
+  <div class="pack"><div>+1000</div><button onclick="add(1000)">Add</button></div>
+  <div class="pack"><div>+2000</div><button onclick="add(2000)">Add</button></div>
+  <div class="pack"><div>+4000</div><button onclick="add(4000)">Add</button></div>
+  <div class="pack"><div>+5000</div><button onclick="add(5000)">Add</button></div>
+
 </div>
 
-<div class="container loading" id="loadingBox">
-    <div class="loader"></div>
-    <p>Processing...</p>
+<!-- تأكيد -->
+<div id="page2" class="hidden box center">
+  <p>Do you want to continue?</p>
+  <button onclick="start()">Confirm</button>
 </div>
 
-<div class="container success" id="successBox">
-    ✅ Transaction Successful
+<!-- تحميل -->
+<div id="page3" class="hidden box center">
+  <p>Processing...</p>
+  <div class="loader"><div class="bar"></div></div>
+</div>
+
+<!-- نجاح -->
+<div id="page4" class="hidden box center">
+  <div class="check">✔</div>
+  <div class="success-text">Successful</div>
+  <p id="done"></p>
+</div>
+
 </div>
 
 <script>
-let balance = 25000;
+let amount = 0;
+let account = 100000;
 
-function setAmount(val){
-    document.getElementById("amount").value = val;
+function setManual(v){
+  amount = parseInt(v || 0);
+  document.getElementById("amount").innerText = amount;
 }
 
-function startProcess(){
-    let user = document.getElementById("user").value;
-    let amount = Number(document.getElementById("amount").value);
+function add(x){
+  amount += x;
+  document.getElementById("amount").innerText = amount;
+}
 
-    if(user === "" || amount <= 0){
-        alert("Please enter username and amount");
-        return;
-    }
+function askEdit(){
+  if(amount <= 0) return alert("Enter coins");
+  page1.classList.add("hidden");
+  page2.classList.remove("hidden");
+}
 
-    if(amount > balance){
-        alert("Insufficient balance");
-        return;
-    }
+function start(){
+  page2.classList.add("hidden");
+  page3.classList.remove("hidden");
 
-    balance -= amount;
-    document.getElementById("balance").innerText = balance;
+  setTimeout(()=>{
+    account -= amount;
+    document.getElementById("account").innerText = account;
+    let u = document.getElementById("user").value || "@demo";
+    document.getElementById("done").innerText = amount + " coins edited for " + u;
+    page3.classList.add("hidden");
+    page4.classList.remove("hidden");
+  },3000);
 
-    document.getElementById("formBox").style.display="none";
-    document.getElementById("loadingBox").style.display="block";
-
-    setTimeout(()=>{
-        document.getElementById("loadingBox").style.display="none";
-        document.getElementById("successBox").style.display="block";
-    },3000);
-
-    setTimeout(()=>{
-        document.getElementById("successBox").style.display="none";
-        document.getElementById("formBox").style.display="block";
-        document.getElementById("user").value="";
-        document.getElementById("amount").value="";
-    },5000);
+  setTimeout(()=>{
+    page4.classList.add("hidden");
+    page1.classList.remove("hidden");
+    amount = 0;
+    document.getElementById("amount").innerText = 0;
+    document.getElementById("manual").value = "";
+    // الفارق هنا: خانة اليوزر ترجع فارغة
+    document.getElementById("user").value = "";
+  },5000);
 }
 </script>
 
