@@ -12,8 +12,6 @@ body{
     background:#fdfdfd;
     color:#161823;
 }
-
-/* Header */
 .header{
     background:#fff;
     padding:15px;
@@ -22,15 +20,11 @@ body{
     border-bottom:1px solid #eee;
     font-size:18px;
 }
-
-/* Container */
 .container{
     max-width:450px;
     margin:auto;
     padding:15px;
 }
-
-/* User Card */
 .user-card{
     background:#fff;
     padding:18px;
@@ -40,8 +34,6 @@ body{
     box-shadow:0 2px 8px rgba(0,0,0,0.04);
     position:relative;
 }
-
-/* Badge */
 .badge{
     position:absolute;
     top:-10px;
@@ -53,8 +45,6 @@ body{
     font-weight:bold;
     border-radius:20px;
 }
-
-/* Balance Row (مصغر) */
 .balance-row{
     display:flex;
     align-items:center;
@@ -63,8 +53,6 @@ body{
     font-weight:700;
     margin:12px 0 8px;
 }
-
-/* Coin beside balance (أسود / أبيض) */
 .coin-circle{
     width:36px;
     height:36px;
@@ -77,30 +65,24 @@ body{
     color:#fff;
     font-size:16px;
 }
-
-/* Username */
 .username-field{
     width:100%;
     padding:12px;
-    border:1px solid #ddd;
+    border:2px solid #fe2c55; /* افتراضي أحمر */
     border-radius:8px;
     background:#f8f8f8;
     outline:none;
+    transition: border-color 0.3s;
 }
 .username-field:focus{
-    border-color:#fe2c55;
     background:#fff;
 }
-
-/* Tip Text */
 .tip-text{
     margin-top:8px;
     font-size:13px;
     color:#fe2c55;
     font-weight:600;
 }
-
-/* Coins Grid */
 .coins-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -126,8 +108,6 @@ body{
     font-weight:bold;
     font-size:18px;
 }
-
-/* Small Coin */
 .small-coin{
     width:34px;
     height:34px;
@@ -138,8 +118,6 @@ body{
     justify-content:center;
     font-weight:900;
 }
-
-/* Button */
 .btn{
     width:100%;
     margin-top:25px;
@@ -152,8 +130,6 @@ body{
     font-weight:bold;
     cursor:pointer;
 }
-
-/* Overlay */
 #overlay{
     display:none;
     position:fixed;
@@ -183,8 +159,6 @@ body{
     font-weight:bold;
     display:none;
 }
-
-/* Custom Screen */
 .custom-screen{
     display:none;
     position:fixed;
@@ -281,6 +255,21 @@ body{
     <button class="btn" onclick="processRecharge()">Continue</button>
 </div>
 
+<!-- Confirm Screen -->
+<div class="custom-screen" id="confirmScreen">
+    <div class="custom-box">
+        <div class="custom-title">Confirm Recharge</div>
+
+        <p><b>Username:</b> <span id="cUser"></span></p>
+        <p><b>Coins:</b> <span id="cCoins"></span></p>
+        <p><b>Current Balance:</b> <span id="cBefore"></span></p>
+        <p><b>Deduction:</b> <span id="cDeduct"></span></p>
+        <p><b>Balance After:</b> <span id="cAfter"></span></p>
+
+        <button class="confirm-btn" onclick="confirmRecharge()">Confirm</button>
+    </div>
+</div>
+
 <div id="overlay">
     <div id="loader" class="loader"></div>
     <div id="successIcon" class="success-icon">✔</div>
@@ -308,7 +297,7 @@ body{
             <button onclick="press('9')">9</button>
             <button onclick="press('0')">0</button>
         </div>
-        <button class="confirm-btn" onclick="confirmCustom()">تأكيد</button>
+        <button class="confirm-btn" onclick="confirmCustom()">send </button>
     </div>
 </div>
 
@@ -341,26 +330,57 @@ function confirmCustom(){
     document.querySelectorAll('.coin-box').forEach(b=>b.classList.remove('active'));
     document.querySelector('.coin-box:last-child').classList.add('active');
 }
+
+// متابعة لون الحافة للـ Username
+const usernameField = document.getElementById("username");
+usernameField.addEventListener("input", function() {
+    if(this.value.trim().length > 0){
+        this.style.borderColor = "#4bb543"; // أخضر لو فيه نص
+    } else {
+        this.style.borderColor = "#fe2c55"; // أحمر لو فاضي
+    }
+});
+
 function processRecharge(){
     const user=document.getElementById("username").value;
     if(!user||selectedVal<=0){
         alert("يرجى إدخال اسم المستخدم واختيار عدد العملات");
         return;
     }
+
+    cUser.innerText = user;
+    cCoins.innerText = selectedVal.toLocaleString();
+    cBefore.innerText = currentBalance.toLocaleString();
+    cDeduct.innerText = selectedVal.toLocaleString();
+    cAfter.innerText = (currentBalance - selectedVal).toLocaleString();
+
+    document.getElementById("confirmScreen").style.display="block";
+}
+
+function confirmRecharge(){
+    document.getElementById("confirmScreen").style.display="none";
+
     overlay.style.display="flex";
     loader.style.display="block";
     successIcon.style.display="none";
     successText.style.display="none";
+
     setTimeout(()=>{
         loader.style.display="none";
         successIcon.style.display="block";
         successText.style.display="block";
-        currentBalance-=selectedVal;
-        balance.innerText=currentBalance.toLocaleString();
+
+        currentBalance -= selectedVal;
+        balance.innerText = currentBalance.toLocaleString();
+
+        document.getElementById("username").value = "";
+        usernameField.style.borderColor = "#fe2c55"; // يرجع أحمر بعد المسح
+        selectedVal = 0;
+
         setTimeout(()=>overlay.style.display="none",3000);
     },2500);
 }
 </script>
 
 </body>
-</html>
+            </html>
